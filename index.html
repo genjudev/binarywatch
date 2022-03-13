@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Clock</title>
+    <style>
+        body {
+            background-color: rgb(155, 35, 53);
+            color: white;
+            font-family: Helvetica, sans-serif;
+        }
+        button {
+            font-size: 36px;
+        }
+        .tlabel {
+            font-size: 16px;
+            margin-left: 5px;
+        }
+        #hours {
+            font-size: 32px;
+        }
+        #minutes {
+            font-size: 32px;
+        }
+        #seconds {
+            font-size: 24px;
+        }
+        #current {
+            font-size: 48px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+        .container-row button {
+            margin: 1.5rem;
+        }
+        .container h3 {
+            padding: .2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3><span id="hours"></span> <span class="tlabel">hours</span></h3>
+        <h3><span id="minutes"></span> <span class="tlabel">minutes</span></h3>
+        <h3><span id="seconds"></span> <span class="tlabel">seconds</span></h3>
+    </div>
+    <div style="margin-top: 2.5rem"></div>
+    <div class="container">
+    </div>
+    <div class="container-row">
+        <button id="toggleBtn" onclick="start()">Start</button>
+    </div>
+
+    <div class="container">
+        <h3><span id="current"></span></h3>
+    </div>
+    <script>
+        const h = document.getElementById('hours');
+        const m = document.getElementById('minutes');
+        const s = document.getElementById('seconds');
+
+        function fill(size, str) {
+            let newStr = '';
+            for(let i = 0; i < (size - str.length); i++) {
+                newStr += "0";
+            }
+            newStr += str;
+            return newStr;
+        }
+
+        function init() {
+            const d = new Date();
+
+            const timeStarted = localStorage.getItem('time_started');
+            if(timeStarted) {
+                const ms = Math.floor(Math.abs(new Date(timeStarted) - d) / 1000);
+                document.getElementById('current').innerHTML = (ms >>> 0).toString(2);
+            }
+
+            h.innerHTML = fill(5, (d.getHours() >>> 0).toString(2));
+            m.innerHTML = fill(6, (d.getMinutes() >>> 0).toString(2));
+            s.innerHTML = fill(6, (d.getSeconds() >>> 0).toString(2));
+        }
+
+        function stop() {
+            localStorage.removeItem('time_started');
+            document.getElementById('current').innerHTML = '';
+            document.getElementById('toggleBtn').onclick = start;
+            document.getElementById('toggleBtn').innerHTML = 'Start'
+
+        }
+        
+        function start() {
+            const newDate = new Date()
+            localStorage.setItem('time_started', newDate.toString())
+            const dateString = Math.floor(Math.abs(new Date(newDate) - new Date()) / 1000);
+            document.getElementById('current').innerHTML = (dateString >>> 0).toString(2);
+            document.getElementById('toggleBtn').onclick = stop;
+            document.getElementById('toggleBtn').innerHTML = 'Stop'
+
+        }
+        if(localStorage.getItem('time_started')) {
+            document.getElementById('toggleBtn').onclick = stop;
+            document.getElementById('toggleBtn').innerHTML = 'Stop'
+        }
+        init();
+        setInterval(init, 1000);
+    </script>
+</body>
+</html>
