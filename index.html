@@ -69,6 +69,8 @@
         const h = document.getElementById('hours');
         const m = document.getElementById('minutes');
         const s = document.getElementById('seconds');
+        const c = document.getElementById('current');
+        const btn = document.getElementById('toggleBtn');
 
         function fill(size, str) {
             let newStr = '';
@@ -85,7 +87,7 @@
             const timeStarted = localStorage.getItem('time_started');
             if(timeStarted) {
                 const ms = Math.floor(Math.abs(new Date(timeStarted) - d) / 1000);
-                document.getElementById('current').innerHTML = (ms >>> 0).toString(2);
+                c.innerHTML = (ms >>> 0).toString(2);
             }
 
             h.innerHTML = fill(5, (d.getHours() >>> 0).toString(2));
@@ -95,9 +97,9 @@
 
         function stop() {
             localStorage.removeItem('time_started');
-            document.getElementById('current').innerHTML = '';
-            document.getElementById('toggleBtn').onclick = start;
-            document.getElementById('toggleBtn').innerHTML = 'Start'
+            c.innerHTML = '';
+            btn.onclick = start;
+            btn.innerHTML = 'Start'
 
         }
         
@@ -105,14 +107,14 @@
             const newDate = new Date()
             localStorage.setItem('time_started', newDate.toString())
             const dateString = Math.floor(Math.abs(new Date(newDate) - new Date()) / 1000);
-            document.getElementById('current').innerHTML = (dateString >>> 0).toString(2);
-            document.getElementById('toggleBtn').onclick = stop;
-            document.getElementById('toggleBtn').innerHTML = 'Stop'
+            c.innerHTML = (dateString >>> 0).toString(2);
+            btn.onclick = stop;
+            btn.innerHTML = 'Stop'
 
         }
         if(localStorage.getItem('time_started')) {
-            document.getElementById('toggleBtn').onclick = stop;
-            document.getElementById('toggleBtn').innerHTML = 'Stop'
+            btn.onclick = stop;
+            btn.innerHTML = 'Stop'
         }
         init();
         setInterval(init, 1000);
